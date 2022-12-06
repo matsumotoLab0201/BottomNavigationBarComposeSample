@@ -21,6 +21,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.bottomnavigationbarcomposeexample.ui.ScreenA
+import com.example.bottomnavigationbarcomposeexample.ui.ScreenB
+import com.example.bottomnavigationbarcomposeexample.ui.ScreenC
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,23 +55,21 @@ fun MainScreenPreview() {
     MainScreen()
 }
 
+//it NavBackStackEntryに宛先の画面を渡す
 @Composable
 fun Navigation(navController: NavHostController) {
-    NavHost(navController, startDestination = NavigationItem.Home.route) {
-        composable(NavigationItem.Home.route) {
-            HomeScreen()
+    NavHost(
+        navController,
+        startDestination = NavigationItem.ScreenAo.route
+    ) {
+        composable(NavigationItem.ScreenAo.route) {
+            ScreenA()
         }
-        composable(NavigationItem.Music.route) {
-            MusicScreen()
+        composable(NavigationItem.ScreenBo.route) {
+            ScreenB()
         }
-        composable(NavigationItem.Movies.route) {
-            MoviesScreen()
-        }
-        composable(NavigationItem.Books.route) {
-            BooksScreen()
-        }
-        composable(NavigationItem.Profile.route) {
-            ProfileScreen()
+        composable(NavigationItem.ScreenCo.route) {
+            ScreenC()
         }
     }
 }
@@ -91,11 +92,9 @@ fun TopBarPreview() {
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
-        NavigationItem.Home,
-        NavigationItem.Music,
-        NavigationItem.Movies,
-        NavigationItem.Books,
-        NavigationItem.Profile
+        NavigationItem.ScreenAo,
+        NavigationItem.ScreenBo,
+        NavigationItem.ScreenCo,
     )
     BottomNavigation(
         backgroundColor = colorResource(id = R.color.colorPrimary),
@@ -113,18 +112,13 @@ fun BottomNavigationBar(navController: NavController) {
                 selected = currentRoute == item.route,
                 onClick = {
                     navController.navigate(item.route) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
+
                         navController.graph.startDestinationRoute?.let { route ->
                             popUpTo(route) {
                                 saveState = true
                             }
                         }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
                         launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
                         restoreState = true
                     }
                 }
